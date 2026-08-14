@@ -58,6 +58,23 @@ test("GitHub client searches repository artifacts by exact name", async () => {
   assert.equal(calls[0].init.headers.authorization, "Bearer test-token");
 });
 
+test("GitHub client requests job logs with the supported media type", async () => {
+  const calls = [];
+  const client = createGithubClient({
+    token: "test-token",
+    fetchImpl: async (url, init) => {
+      calls.push({url, init});
+      return new Response("log line", {status: 200, headers: {"content-type": "text/plain"}});
+    },
+  });
+
+  const logs = await client.getJobLogs("octo/demo", 456);
+
+  assert.deepEqual(logs, {status: "ok", text: "log line"});
+  assert.match(calls[0].url, /actions\/jobs\/456\/logs$/);
+  assert.equal(calls[0].init.headers.accept, "application/vnd.github+json");
+});
+
 test("repository and run URL parsing handles GitHub URL forms", () => {
   assert.equal(parseGithubRepository("git@github.com:octo/demo.git"), "octo/demo");
   assert.equal(parseGithubRepository("https://github.com/octo/demo.git"), "octo/demo");
