@@ -58,23 +58,6 @@ test("GitHub client searches repository artifacts by exact name", async () => {
   assert.equal(calls[0].init.headers.authorization, "Bearer test-token");
 });
 
-test("GitHub client searches repository artifacts by exact name", async () => {
-  const calls = [];
-  const client = createGithubClient({
-    token: "test-token",
-    fetchImpl: async (url, init) => {
-      calls.push({url, init});
-      return new Response(JSON.stringify({artifacts: [{id: 88, name: "codex-ci-prompt-123", expired: false}]}), {status: 200, headers: {"content-type": "application/json"}});
-    },
-  });
-
-  const artifacts = await client.getArtifactsByName("octo/demo", "codex-ci-prompt-123");
-
-  assert.equal(artifacts[0].id, 88);
-  assert.match(calls[0].url, /actions\/artifacts\?name=codex-ci-prompt-123&per_page=100$/);
-  assert.equal(calls[0].init.headers.authorization, "Bearer test-token");
-});
-
 test("GitHub client requests job logs with the supported media type", async () => {
   const calls = [];
   const client = createGithubClient({
@@ -103,6 +86,7 @@ test("workflow template has the required provider and safety boundaries", async 
   const action = await readFile(new URL("../action.yml", import.meta.url), "utf8");
   const emitter = await readFile(new URL("../scripts/emit-workflow-prompt.mjs", import.meta.url), "utf8");
   assert.match(workflow, /workflow_run:/);
+  assert.match(workflow, /workflow_run\.run_attempt/);
   assert.match(workflow, /actions: write/);
   assert.match(workflow, /pull-requests: read/);
   assert.doesNotMatch(workflow, /actions\/checkout/);

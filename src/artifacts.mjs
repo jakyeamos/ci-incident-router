@@ -9,6 +9,18 @@ const execFileAsync = promisify(execFile);
 const ARTIFACT_SCHEMA = "ci-failure-context/v1";
 const ARCHIVE_MAX_BUFFER = 2_000_000;
 
+function normalizedRunAttempt(value) {
+  const attempt = Number(value);
+  return Number.isInteger(attempt) && attempt > 0 ? attempt : null;
+}
+
+export function promptArtifactName(runId, runAttempt = null) {
+  const attempt = normalizedRunAttempt(runAttempt);
+  return attempt === null
+    ? `codex-ci-prompt-${runId}`
+    : `codex-ci-prompt-${runId}-${attempt}`;
+}
+
 export async function writeArtifacts(context, outputDir) {
   const directory = resolve(outputDir);
   await mkdir(directory, { recursive: true });
@@ -114,6 +126,7 @@ export async function downloadPromptArtifact({
   client,
   repository,
   runId,
+  runAttempt,
   outputDir,
   unzipCommand,
   execFileImpl,
@@ -125,16 +138,36 @@ export async function downloadPromptArtifact({
   ) {
     throw new Error("A GitHub client with artifact support is required.");
   }
-  const expectedName = `codex-ci-prompt-${runId}`;
-  const artifacts = typeof client.getArtifactsByName === "function"
-    ? await client.getArtifactsByName(repository, expectedName)
-    : await client.getRunArtifacts(repository, runId);
-  const matches = artifacts.filter((artifact) => (
-    artifact?.name === expectedName
-    && artifact?.expired !== true
-  ));
+  const run = runAttempt === undefined && typeof client.getWorkflowRun === "function"
+    ? await client.getWorkflowRun(repository, runId)
+    : null;
+  const resolvedRunAttempt = normalizedRunAttempt(runAttempt ?? run?.run_attempt);
+  const expectedName = promptArtifactName(runId, resolvedRunAttempt);
+  const expectedNames = [expectedName];
+  if (resolvedRunAttempt === null || resolvedRunAttempt === 1) {
+    const legacyName = promptArtifactName(runId);
+    if (!expectedNames.includes(legacyName)) expectedNames.push(legacyName);
+  }
+
+  let matches = [];
+  if (typeof client.getArtifactsByName === "function") {
+    for (const name of expectedNames) {
+      const artifacts = await client.getArtifactsByName(repository, name);
+      matches = artifacts.filter((artifact) => (
+        artifact?.name === name
+        && artifact?.expired !== true
+      ));
+      if (matches.length > 0) break;
+    }
+  } else {
+    const artifacts = await client.getRunArtifacts(repository, runId);
+    matches = artifacts.filter((artifact) => (
+      expectedNames.includes(artifact?.name)
+      && artifact?.expired !== true
+    ));
+  }
   if (matches.length === 0) {
-    throw new Error(`No unexpired '${expectedName}' artifact was found for workflow run ${runId}.`);
+    throw new Error(`No unexpired prompt artifact was found for workflow run ${runId} (expected '${expectedName}').`);
   }
   if (matches.length > 1) {
     throw new Error(`Multiple '${expectedName}' artifacts were found for workflow run ${runId}; refusing to guess.`);
@@ -143,5 +176,13 @@ export async function downloadPromptArtifact({
   if (artifact.id === undefined || artifact.id === null) throw new Error(`Artifact '${expectedName}' has no id.`);
   const archive = await client.downloadArtifact(repository, artifact.id);
   const paths = await unpackPromptArtifact(archive, outputDir, { unzipCommand, execFileImpl });
-  return { ...paths, artifact: { id: artifact.id, name: artifact.name, expired: artifact.expired ?? false } };
+  return {
+    ...paths,
+    artifact: {
+      id: artifact.id,
+      name: artifact.name,
+      expired: artifact.expired ?? false,
+      runAttempt: resolvedRunAttempt,
+    },
+  };
 }

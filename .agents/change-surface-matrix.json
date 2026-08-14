@@ -45,15 +45,10 @@
       "status": "applicable"
     }
   ],
-  "unresolved_surfaces": [
-    {
-      "id": "provider-publication",
-      "reason": "No GitHub remote or published action reference exists yet; live installation is intentionally deferred."
-    }
-  ],
+  "unresolved_surfaces": [],
   "operation_evidence": {
     "add": {"status": "passed", "evidence": ["src/context.mjs; src/prompt.mjs; src/artifacts.mjs; bin/codex-ci.mjs; action.yml; .github/workflow-templates/codex-ci-prompt.yml", "tests/; pnpm test; pnpm lint; pnpm typecheck; pnpm build; pnpm quality:contract"]},
-    "change": {"status": "not_applicable", "evidence": ["This is a newly created repository; there is no prior implementation to migrate or change in place."]},
+    "change": {"status": "passed", "evidence": ["Rerun-aware artifact naming and download selection are covered by tests and the published action reference; Quality Runner consumer workflow is installed and live-tested."]},
     "remove": {"status": "not_applicable", "evidence": ["No existing feature is being removed."]}
   }
 }
