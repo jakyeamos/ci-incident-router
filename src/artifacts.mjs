@@ -118,15 +118,20 @@ export async function downloadPromptArtifact({
   unzipCommand,
   execFileImpl,
 } = {}) {
-  if (!client || typeof client.getRunArtifacts !== "function" || typeof client.downloadArtifact !== "function") {
+  if (
+    !client
+    || (typeof client.getArtifactsByName !== "function" && typeof client.getRunArtifacts !== "function")
+    || typeof client.downloadArtifact !== "function"
+  ) {
     throw new Error("A GitHub client with artifact support is required.");
   }
   const expectedName = `codex-ci-prompt-${runId}`;
-  const artifacts = await client.getRunArtifacts(repository, runId);
+  const artifacts = typeof client.getArtifactsByName === "function"
+    ? await client.getArtifactsByName(repository, expectedName)
+    : await client.getRunArtifacts(repository, runId);
   const matches = artifacts.filter((artifact) => (
     artifact?.name === expectedName
     && artifact?.expired !== true
-    && (!artifact?.workflow_run?.id || String(artifact.workflow_run.id) === String(runId))
   ));
   if (matches.length === 0) {
     throw new Error(`No unexpired '${expectedName}' artifact was found for workflow run ${runId}.`);
