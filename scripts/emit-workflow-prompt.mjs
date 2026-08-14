@@ -25,7 +25,7 @@ async function main() {
   const artifacts = await emitWorkflowPrompt({
     runId: options.run_id ?? process.env.GITHUB_RUN_ID,
     repository: options.repository ?? process.env.GITHUB_REPOSITORY,
-    token: options.token ?? process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN,
+    token: options.token ?? process.env.CODEX_CI_TOKEN ?? process.env.GITHUB_TOKEN ?? process.env.GH_TOKEN,
     outputDir: options.output_dir ?? "codex-ci-prompt",
   });
   console.log(`Wrote ${artifacts.jsonPath}`);

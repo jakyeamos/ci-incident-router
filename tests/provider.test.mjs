@@ -48,10 +48,14 @@ test("repository and run URL parsing handles GitHub URL forms", () => {
 
 test("workflow template has the required provider and safety boundaries", async () => {
   const workflow = await readFile(new URL("../.github/workflow-templates/codex-ci-prompt.yml", import.meta.url), "utf8");
+  const action = await readFile(new URL("../action.yml", import.meta.url), "utf8");
+  const emitter = await readFile(new URL("../scripts/emit-workflow-prompt.mjs", import.meta.url), "utf8");
   assert.match(workflow, /workflow_run:/);
   assert.match(workflow, /actions: write/);
   assert.match(workflow, /pull-requests: read/);
   assert.doesNotMatch(workflow, /actions\/checkout/);
   assert.doesNotMatch(workflow, /pull_request_target/);
   assert.doesNotMatch(workflow, /dangerously-bypass/);
+  assert.match(action, /CODEX_CI_TOKEN/);
+  assert.match(emitter, /process\.env\.CODEX_CI_TOKEN/);
 });
