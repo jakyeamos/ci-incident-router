@@ -1,0 +1,99 @@
+{
+  "schema_version": 1,
+  "revision": 1,
+  "project": {
+    "name": "ci-incident-router",
+    "identity": "A deterministic bridge from failed GitHub Actions runs to bounded Codex prompts.",
+    "audience": "Developers who already use Codex for CI-fix diagnosis and want failure context packaged consistently.",
+    "core_loop": "Collect actionable run evidence, redact and bound it, emit JSON and Markdown artifacts, and hand the prompt to Codex on explicit user request.",
+    "north_star": "A failed CI run produces trustworthy, bounded context that a developer can use immediately in a controlled Codex session.",
+    "not_this": ["An email notification system", "A persistent incident daemon", "An automatic code-editing or merge bot"]
+  },
+  "targets": {
+    "mvp": {"definition": "A failed GitHub Actions run can produce JSON and Markdown prompt artifacts, and a local command can preview or explicitly start a read-only Codex handoff."},
+    "complete_product": {"definition": "The reusable action is published, installed in selected repositories, and verified against real failed runs with honest fork and missing-data behavior."}
+  },
+  "pillars": [
+    {
+      "id": "failure-context",
+      "name": "Bounded failure context",
+      "outcomes": [
+        {
+          "id": "normalized-evidence",
+          "name": "Actionable runs produce versioned, stable, provenance-bound failure context.",
+          "targets": ["mvp", "complete_product"],
+          "maturity": 75,
+          "confidence": "medium",
+          "layers": {
+            "intended": "The user gets the same useful CI-fix context that Codex already uses, packaged as a prompt input.",
+            "planned": "The context contract covers run, failures, logs, pull requests, changed files, provenance, and missing data.",
+            "implemented": "Node modules collect and normalize the configured GitHub API evidence with fixture coverage.",
+            "verified": "pnpm test and the repository quality ladder pass; fixture and mocked-client tests cover actionable runs, missing data, forks, redaction, truncation, and rerun-distinct ids. Live GitHub collection is not yet proven."
+          },
+          "evidence": [
+            {"ref": "src/context.mjs", "note": "Normalized context implementation.", "observed_at": "2026-08-14T16:21:30Z"},
+            {"ref": "tests/context.test.mjs", "note": "Fixture coverage for actionable, cancelled, successful, missing-log, missing-PR, fork, and rerun behavior.", "observed_at": "2026-08-14T16:21:30Z"}
+          ],
+          "blockers": [{"kind": "external", "summary": "A valid GitHub credential and published or installed action are required for live provider evidence."}]
+        }
+      ]
+    },
+    {
+      "id": "codex-handoff",
+      "name": "Controlled Codex handoff",
+      "outcomes": [
+        {
+          "id": "safe-prompt-artifact",
+          "name": "Developers can review a redacted prompt artifact and explicitly hand it to Codex without automatic source mutation.",
+          "targets": ["mvp", "complete_product"],
+          "maturity": 75,
+          "confidence": "medium",
+          "layers": {
+            "intended": "CI failures become prompts instead of email notifications or a passive daemon.",
+            "planned": "The artifact pair and read-only handoff are the v1 delivery surface.",
+            "implemented": "The prompt renderer, artifact reader, CLI, and safe Codex command are implemented.",
+            "verified": "pnpm test verifies deterministic rendering, redaction, bounded artifact download, CLI preview, and the read-only handoff command. A real Codex session remains intentionally user-controlled and unstarted."
+          },
+          "evidence": [
+            {"ref": "bin/codex-ci.mjs", "note": "CLI prompt, download, consume, and read-only handoff surface.", "observed_at": "2026-08-14T16:21:30Z"},
+            {"ref": "tests/artifacts.test.mjs; tests/cli.test.mjs; tests/prompt.test.mjs", "note": "Artifact, CLI, trust-boundary, and redaction verification.", "observed_at": "2026-08-14T16:21:30Z"}
+          ],
+          "blockers": [{"kind": "verification", "summary": "A real Codex session was not started; the bridge only verifies the preview and read-only command contract."}]
+        }
+      ]
+    },
+    {
+      "id": "provider-adapter",
+      "name": "GitHub Actions adapter",
+      "outcomes": [
+        {
+          "id": "workflow-artifact",
+          "name": "A default-branch workflow can upload prompt artifacts for actionable workflow runs without checking out the failed commit.",
+          "targets": ["mvp", "complete_product"],
+          "maturity": 25,
+          "confidence": "low",
+          "layers": {
+            "intended": "The bridge can be installed as a reusable GitHub Actions workflow.",
+            "planned": "The composite action and workflow template define the provider edge.",
+            "implemented": "The action and template are present locally.",
+            "verified": "Static workflow safety and mocked provider-client tests pass; provider execution, artifact upload, and fork behavior are not live-verified."
+          },
+          "evidence": [{"ref": "action.yml; .github/workflow-templates/codex-ci-prompt.yml; tests/provider.test.mjs", "note": "Composite action, workflow boundary, and mocked GitHub API contract.", "observed_at": "2026-08-14T16:21:30Z"}],
+          "blockers": [{"kind": "external", "summary": "No remote repository or authenticated GitHub workflow run is currently available."}]
+        }
+      ]
+    }
+  ],
+  "source_layers": {
+    "intended": [{"ref": "docs/PRD.md", "note": "Current user-approved product boundary.", "observed_at": "2026-08-14T15:55:00Z"}],
+    "planned": [{"ref": "README.md", "note": "MVP and excluded surfaces.", "observed_at": "2026-08-14T15:55:00Z"}],
+    "implemented": [{"ref": "src/", "note": "Local implementation surface.", "observed_at": "2026-08-14T15:55:00Z"}],
+    "verified": [
+      {"ref": "tests/", "note": "18 local tests pass, including mocked GitHub responses and artifact-file handling.", "observed_at": "2026-08-14T16:21:30Z"},
+      {"ref": "pnpm test; pnpm lint; pnpm typecheck; pnpm build; pnpm quality:contract; pre-cr run", "note": "All required local gates pass; Pre-CR reports ready with a coverage warning because no coverage report is configured.", "observed_at": "2026-08-14T16:21:30Z"},
+      {"ref": ".quality-runner/runs/20260814T162044Z-ad6abdf5/run-manifest.json", "note": "Quality Runner inspect-only baseline; source worktree unchanged and no gates executed.", "observed_at": "2026-08-14T16:20:44Z"}
+    ]
+  },
+  "drift": [{"kind": "verification-gap", "summary": "The provider workflow is implemented locally but has no live GitHub publication or failed-run evidence.", "status": "open", "observed_at": "2026-08-14T16:21:30Z", "evidence": [{"ref": "docs/installation.md", "note": "Provider publication is explicitly deferred.", "observed_at": "2026-08-14T16:21:30Z"}]}],
+  "updated_at": "2026-08-14T16:21:30Z"
+}

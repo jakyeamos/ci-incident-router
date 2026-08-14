@@ -1,0 +1,21 @@
+{
+  "name": "@jakyeamos/ci-incident-router",
+  "version": "0.1.0",
+  "description": "Deterministic GitHub Actions failure context and Codex prompt bridge.",
+  "type": "module",
+  "private": true,
+  "packageManager": "pnpm@11.20.0",
+  "engines": {
+    "node": ">=20"
+  },
+  "bin": {
+    "codex-ci": "./bin/codex-ci.mjs"
+  },
+  "scripts": {
+    "test": "node --test",
+    "lint": "node scripts/lint.mjs",
+    "typecheck": "node scripts/typecheck.mjs",
+    "build": "node scripts/build.mjs",
+    "quality:contract": "node scripts/check-contracts.mjs"
+  }
+}

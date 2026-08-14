@@ -1,0 +1,29 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://local.ci-incident-router/ci-failure-context.schema.json",
+  "title": "CI Failure Context",
+  "type": "object",
+  "required": ["schema", "id", "generatedAt", "repository", "run", "pullRequests", "failures", "changedFiles", "provenance", "missingData", "safety"],
+  "properties": {
+    "schema": { "const": "ci-failure-context/v1" },
+    "id": { "type": "string", "pattern": "^cif_[a-f0-9]{20}$" },
+    "generatedAt": { "type": "string", "format": "date-time" },
+    "repository": { "type": "object", "required": ["fullName", "defaultBranch", "url"] },
+    "run": { "type": "object", "required": ["id", "url", "conclusion"] },
+    "pullRequests": { "type": "array" },
+    "failures": { "type": "array" },
+    "changedFiles": { "type": "array" },
+    "provenance": { "type": "array" },
+    "missingData": { "type": "array", "items": { "type": "string" } },
+    "safety": {
+      "type": "object",
+      "required": ["untrustedEvidence", "forkDiagnosisOnly", "codeExecution"],
+      "properties": {
+        "untrustedEvidence": { "const": true },
+        "forkDiagnosisOnly": { "type": "boolean" },
+        "codeExecution": { "const": "not-performed" }
+      }
+    }
+  },
+  "additionalProperties": true
+}

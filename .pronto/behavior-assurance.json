@@ -1,0 +1,105 @@
+{
+  "schema": "pronto-behavior-assurance/v2",
+  "applicability": "applicable",
+  "approved_producers": ["quality-runner"],
+  "behaviors": [
+    {
+      "id": "normalize-failure-context",
+      "title": "Actionable GitHub runs become versioned failure context",
+      "tier": 0,
+      "automation": "permanent",
+      "change_triggers": ["src/context.mjs", "src/github.mjs", "src/constants.mjs", "schemas/**"],
+      "invariants": [
+        "Only actionable conclusions produce a failure context.",
+        "The context preserves failure evidence, provenance, and unavailable data explicitly.",
+        "The stable context id is reproducible for the same normalized evidence."
+      ],
+      "scenarios": [
+        {
+          "id": "actionable-run-normalized",
+          "title": "A failed run is normalized with failed jobs and provenance",
+          "oracle": "Fixture-backed collection returns schema v1 context with the failed job, bounded evidence, stable id, and source URLs.",
+          "verification_level": "automated",
+          "edge_profile": {"categories": ["input_and_encoding"], "risk": "routine", "side_effects": "none"}
+        },
+        {
+          "id": "missing-log-preserved",
+          "title": "Unavailable logs remain an explicit uncertainty",
+          "oracle": "When the job log endpoint is unavailable, the context records unavailable status and a missing-data note without inventing log text.",
+          "verification_level": "automated",
+          "edge_profile": {"categories": ["interruption_and_recovery"], "risk": "routine", "side_effects": "none"}
+        }
+      ]
+    },
+    {
+      "id": "render-safe-codex-prompt",
+      "title": "Failure context becomes a bounded, trust-aware Codex prompt",
+      "tier": 0,
+      "automation": "permanent",
+      "change_triggers": ["src/prompt.mjs", "src/redaction.mjs", "src/artifacts.mjs"],
+      "invariants": [
+        "Prompt output is deterministic for the same context.",
+        "Common credentials are redacted and log or patch content is bounded.",
+        "Evidence is marked untrusted and the requested work does not authorize merge, push, or automatic edits."
+      ],
+      "scenarios": [
+        {
+          "id": "secret-redacted-and-bounded",
+          "title": "Secrets and oversized logs are removed or bounded",
+          "oracle": "Rendered Markdown contains no fixture token, stays within configured bounds, and includes the evidence trust boundary.",
+          "verification_level": "automated",
+          "edge_profile": {"categories": ["resource_pressure", "authorization_and_session"], "risk": "hostile", "side_effects": "none"}
+        }
+      ]
+    },
+    {
+      "id": "workflow-emits-artifact-without-checkout",
+      "title": "The provider workflow emits a prompt artifact without executing the failed commit",
+      "tier": 0,
+      "automation": "on_demand",
+      "change_triggers": ["action.yml", "scripts/emit-workflow-prompt.mjs", ".github/workflow-templates/**"],
+      "invariants": [
+        "The provider edge listens to completed workflow runs and filters actionable conclusions.",
+        "The prompt workflow does not check out or execute the failed pull-request head.",
+        "The output artifact contains both JSON and Markdown prompt files."
+      ],
+      "scenarios": [
+        {
+          "id": "workflow-template-safe",
+          "title": "The workflow template uses the safe provider boundary",
+          "oracle": "Static workflow checks find workflow_run, least-privilege read permissions plus artifact upload, and no checkout or pull_request_target usage.",
+          "verification_level": "source",
+          "edge_profile": {"categories": ["authorization_and_session", "environment_and_cross_surface"], "risk": "hostile", "side_effects": "reversible"}
+        }
+      ]
+    },
+    {
+      "id": "read-only-codex-handoff",
+      "title": "A user can explicitly hand a prompt to Codex in read-only mode",
+      "tier": 1,
+      "automation": "permanent",
+      "change_triggers": ["bin/codex-ci.mjs", "src/artifacts.mjs"],
+      "invariants": [
+        "The default handoff only prints the prompt and command.",
+        "An explicit start uses Codex read-only sandbox mode and never bypasses approvals or sandboxing.",
+        "Artifact download selects the exact run-scoped artifact and extracts only the known prompt files."
+      ],
+      "scenarios": [
+        {
+          "id": "handoff-default-is-preview",
+          "title": "The default handoff is non-mutating",
+          "oracle": "The CLI prints the prompt and read-only command without starting Codex or changing the checkout.",
+          "verification_level": "automated",
+          "edge_profile": {"categories": ["repetition_and_idempotency"], "risk": "routine", "side_effects": "none"}
+        },
+        {
+          "id": "artifact-download-is-bounded",
+          "title": "Artifact retrieval cannot write arbitrary archive entries",
+          "oracle": "The downloader chooses the exact run-named artifact, rejects unsafe archive paths, and writes only codex-ci-prompt.json and codex-ci-prompt.md.",
+          "verification_level": "automated",
+          "edge_profile": {"categories": ["authorization_and_session", "input_and_encoding"], "risk": "hostile", "side_effects": "reversible"}
+        }
+      ]
+    }
+  ]
+}

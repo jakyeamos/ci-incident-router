@@ -1,0 +1,11 @@
+{
+  "number": 42,
+  "title": "Fix the CI prompt bridge",
+  "html_url": "https://github.com/octo/demo/pull/42",
+  "base": {"ref": "main"},
+  "head": {
+    "ref": "feature/ci-fix",
+    "sha": "0123456789abcdef0123456789abcdef01234567",
+    "repo": {"full_name": "octo/demo"}
+  }
+}

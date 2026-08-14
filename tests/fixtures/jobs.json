@@ -1,0 +1,25 @@
+{
+  "jobs": [
+    {
+      "id": 9001,
+      "name": "unit-tests (node-20)",
+      "html_url": "https://github.com/octo/demo/actions/runs/123456789/job/9001",
+      "status": "completed",
+      "conclusion": "failure",
+      "started_at": "2026-08-14T14:01:00Z",
+      "completed_at": "2026-08-14T14:04:00Z",
+      "steps": [
+        {"name": "Install", "status": "completed", "conclusion": "success", "started_at": "2026-08-14T14:01:00Z", "completed_at": "2026-08-14T14:02:00Z"},
+        {"name": "Test", "status": "completed", "conclusion": "failure", "started_at": "2026-08-14T14:02:00Z", "completed_at": "2026-08-14T14:04:00Z"}
+      ]
+    },
+    {
+      "id": 9002,
+      "name": "lint",
+      "html_url": "https://github.com/octo/demo/actions/runs/123456789/job/9002",
+      "status": "completed",
+      "conclusion": "success",
+      "steps": []
+    }
+  ]
+}

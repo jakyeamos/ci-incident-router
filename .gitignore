@@ -1,0 +1,5 @@
+node_modules/
+coverage/
+.pre-cr/
+codex-ci-prompt/
+.DS_Store

@@ -1,0 +1,59 @@
+{
+  "schema_version": "change-surface-matrix/v1",
+  "subject": {"kind": "repository", "id": "ci-incident-router"},
+  "owner": "Jakye Amos",
+  "last_reviewed": "2026-08-14",
+  "surfaces": [
+    {
+      "id": "context-contract",
+      "scope": "local and machine-readable output",
+      "path": "src/context.mjs; schemas/ci-failure-context.schema.json",
+      "owner": "repository owner",
+      "condition": "The normalized failure context or its schema changes.",
+      "operations": ["add", "change", "remove"],
+      "validation": ["pnpm test", "pnpm quality:contract"],
+      "status": "applicable"
+    },
+    {
+      "id": "prompt-rendering",
+      "scope": "local CLI and Codex artifact",
+      "path": "src/prompt.mjs; src/redaction.mjs; codex-ci-prompt.md",
+      "owner": "repository owner",
+      "condition": "Prompt content, redaction, bounds, or trust-boundary wording changes.",
+      "operations": ["add", "change", "remove"],
+      "validation": ["pnpm test", "pnpm lint"],
+      "status": "applicable"
+    },
+    {
+      "id": "github-workflow-adapter",
+      "scope": "GitHub Actions provider edge",
+      "path": "action.yml; scripts/emit-workflow-prompt.mjs; .github/workflow-templates/",
+      "owner": "repository owner",
+      "condition": "The provider event, API collection, permissions, artifact, or action interface changes.",
+      "operations": ["add", "change", "remove"],
+      "validation": ["pnpm lint", "pnpm build", "controlled failed workflow run"],
+      "status": "applicable"
+    },
+    {
+      "id": "codex-handoff",
+      "scope": "local CLI and Codex runtime",
+      "path": "bin/codex-ci.mjs; src/artifacts.mjs",
+      "owner": "repository owner",
+      "condition": "Prompt consumption or explicit Codex handoff behavior changes.",
+      "operations": ["add", "change", "remove"],
+      "validation": ["pnpm test", "read-only handoff smoke test"],
+      "status": "applicable"
+    }
+  ],
+  "unresolved_surfaces": [
+    {
+      "id": "provider-publication",
+      "reason": "No GitHub remote or published action reference exists yet; live installation is intentionally deferred."
+    }
+  ],
+  "operation_evidence": {
+    "add": {"status": "passed", "evidence": ["src/context.mjs; src/prompt.mjs; src/artifacts.mjs; bin/codex-ci.mjs; action.yml; .github/workflow-templates/codex-ci-prompt.yml", "tests/; pnpm test; pnpm lint; pnpm typecheck; pnpm build; pnpm quality:contract"]},
+    "change": {"status": "not_applicable", "evidence": ["This is a newly created repository; there is no prior implementation to migrate or change in place."]},
+    "remove": {"status": "not_applicable", "evidence": ["No existing feature is being removed."]}
+  }
+}

@@ -1,0 +1,51 @@
+{
+  "version": 1,
+  "testCommand": "pnpm test",
+  "coveragePaths": [],
+  "coverageFormat": "auto",
+  "threshold": 0,
+  "qualityCommands": [
+    "pnpm test",
+    "pnpm lint",
+    "pnpm typecheck",
+    "pnpm build",
+    "pnpm quality:contract"
+  ],
+  "qualityAdapters": [
+    {
+      "name": "contract-validation",
+      "command": "node scripts/check-contracts.mjs",
+      "required": true
+    }
+  ],
+  "surfaces": {
+    "covered": [
+      "bin/**",
+      "src/**",
+      "scripts/**",
+      "schemas/**",
+      "tests/**",
+      ".github/**"
+    ],
+    "ignored": [
+      ".gitignore",
+      ".pre-cr.json",
+      ".quality-runner.toml",
+      "README.md",
+      "AGENTS.md",
+      "SECURITY.md",
+      "docs/**",
+      ".agents/context/**",
+      ".project-compass/**",
+      ".pronto/**",
+      ".quality-runner/**",
+      "coverage/**"
+    ],
+    "unsupported": []
+  },
+  "checks": {
+    "coverage": false,
+    "security": true,
+    "checklist": true
+  }
+}

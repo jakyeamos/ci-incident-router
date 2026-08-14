@@ -1,0 +1,31 @@
+name: Generate Codex CI prompt
+description: Collect a failed GitHub Actions run and emit bounded Codex prompt artifacts.
+inputs:
+  run-id:
+    description: GitHub Actions workflow run id.
+    required: true
+  repository:
+    description: owner/name of the repository containing the run.
+    required: true
+  token:
+    description: Token with read access to Actions, repository metadata, and pull requests.
+    required: true
+  output-dir:
+    description: Directory where prompt artifacts are written.
+    required: false
+    default: codex-ci-prompt
+runs:
+  using: composite
+  steps:
+    - name: Build deterministic Codex prompt
+      shell: bash
+      env:
+        CODEX_CI_RUN_ID: ${{ inputs.run-id }}
+        CODEX_CI_REPOSITORY: ${{ inputs.repository }}
+        CODEX_CI_TOKEN: ${{ inputs.token }}
+        CODEX_CI_OUTPUT_DIR: ${{ inputs.output-dir }}
+      run: >-
+        node "$GITHUB_ACTION_PATH/scripts/emit-workflow-prompt.mjs"
+        --run-id "$CODEX_CI_RUN_ID"
+        --repository "$CODEX_CI_REPOSITORY"
+        --output-dir "$CODEX_CI_OUTPUT_DIR"

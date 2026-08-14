@@ -1,0 +1,30 @@
+{
+  "schema_version": 1,
+  "revision": 1,
+  "commitments": [
+    {"id": "prompt-bridge-goal", "kind": "goal", "statement": "Turn CI failures into useful Codex prompts using the existing CI-fix context path.", "status": "active", "source": {"ref": "conversation:2026-08-14-user-clarification", "note": "The user clarified the motivating outcome.", "observed_at": "2026-08-14T15:55:00Z"}},
+    {"id": "artifact-first-delivery", "kind": "decision", "statement": "V1 delivers prompt artifacts plus a local command; automatic Codex wake-up is deferred.", "status": "active", "source": {"ref": "conversation:2026-08-14-proposed-plan", "note": "User selected artifact plus local command.", "observed_at": "2026-08-14T15:55:00Z"}},
+    {"id": "no-automatic-mutation", "kind": "constraint", "statement": "The workflow and bridge do not automatically edit code, commit, merge, push, or execute fork code.", "status": "active", "source": {"ref": "conversation:2026-08-14-proposed-plan", "note": "Explicit v1 boundary.", "observed_at": "2026-08-14T15:55:00Z"}}
+  ],
+  "reconciliations": [
+    {
+      "id": "narrow-router-to-prompt-bridge",
+      "observed_at": "2026-08-14T15:55:00Z",
+      "source": {"ref": "conversation:2026-08-14-user-clarification", "note": "The user rejected infrastructure-heavy delivery in favor of prompt automation.", "observed_at": "2026-08-14T15:55:00Z"},
+      "classification": "superseding",
+      "materiality": "high",
+      "incoming": "Implement a thin deterministic CI failure to Codex prompt bridge.",
+      "project_evidence": [{"ref": "docs/PRD.md", "note": "The new repository records the narrowed identity and exclusions.", "observed_at": "2026-08-14T15:55:00Z"}],
+      "preserved": ["GitHub Actions failure context", "Codex-oriented diagnosis", "standalone implementation home"],
+      "changed": ["Artifact-first delivery", "No daemon, database, email, comments, or annotations in v1"],
+      "contradicted": ["The earlier full incident-router architecture"],
+      "deferred": ["Automatic Codex wake-up and future executor integration"],
+      "left_behind": ["Persistent incident queue and notification infrastructure"],
+      "unknown": ["Live provider publication and first real failed-run evidence"],
+      "disposition": "recorded-supersession",
+      "reason": "The user explicitly narrowed the earlier incident-router concept to a deterministic artifact and local handoff so the existing CI-fix workflow can be automated without adding a daemon or delivery service.",
+      "question": ""
+    }
+  ],
+  "updated_at": "2026-08-14T15:55:00Z"
+}
