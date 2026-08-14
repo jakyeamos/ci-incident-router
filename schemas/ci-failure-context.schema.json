@@ -9,7 +9,13 @@
     "id": { "type": "string", "pattern": "^cif_[a-f0-9]{20}$" },
     "generatedAt": { "type": "string", "format": "date-time" },
     "repository": { "type": "object", "required": ["fullName", "defaultBranch", "url"] },
-    "run": { "type": "object", "required": ["id", "url", "conclusion"] },
+    "run": {
+      "type": "object",
+      "required": ["id", "url", "conclusion"],
+      "properties": {
+        "runAttempt": { "type": ["integer", "null"], "minimum": 1 }
+      }
+    },
     "pullRequests": { "type": "array" },
     "failures": { "type": "array" },
     "changedFiles": { "type": "array" },

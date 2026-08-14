@@ -45,10 +45,12 @@ Pass `--start` only when you explicitly want this process to start
 `codex exec` with a read-only sandbox.
 
 `download` searches the repository's artifact catalog for the exact
-`codex-ci-prompt-<run-id>` name, downloads its archive, and extracts only the
-JSON and Markdown prompt files. The run ID is the failed CI run ID embedded in
-the artifact name; the artifact itself is attached to the prompt workflow run.
-It requires the system `unzip` command.
+`codex-ci-prompt-<run-id>-<run-attempt>` name, downloads its archive, and
+extracts only the JSON and Markdown prompt files. Including the run attempt
+keeps GitHub reruns distinguishable without a database. The CLI also accepts
+the legacy first-attempt name `codex-ci-prompt-<run-id>` for existing artifacts.
+The artifact itself is attached to the prompt workflow run. It requires the
+system `unzip` command.
 
 ## GitHub Actions
 

@@ -4,11 +4,12 @@ import { collectCiFailureContext, NonActionableRunError } from "../src/context.m
 import { makeFixtureClient } from "./helpers.mjs";
 
 test("normalizes an actionable run, filters successful matrix jobs, and redacts evidence", async () => {
-  const client = await makeFixtureClient();
+  const client = await makeFixtureClient({runOverride: {run_attempt: 3}});
   const first = await collectCiFailureContext({ client, repository: "octo/demo", runId: 123456789, now: "2026-08-14T15:00:00Z" });
   const second = await collectCiFailureContext({ client, repository: "octo/demo", runId: 123456789, now: "2026-08-14T16:00:00Z" });
 
   assert.equal(first.schema, "ci-failure-context/v1");
+  assert.equal(first.run.runAttempt, 3);
   assert.equal(first.failures.length, 1);
   assert.equal(first.failures[0].name, "unit-tests (node-20)");
   assert.match(first.failures[0].log.excerpt, /expected true/);

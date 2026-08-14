@@ -49,6 +49,11 @@ function runUrl(repository, run) {
   return run?.html_url || run?.url || `https://github.com/${repository}/actions/runs/${run?.id}`;
 }
 
+function normalizeRunAttempt(value) {
+  const attempt = Number(value);
+  return Number.isInteger(attempt) && attempt > 0 ? attempt : null;
+}
+
 function normalizePullRequest(repository, pull) {
   const headRepository = pull?.head?.repo?.full_name ?? null;
   return {
@@ -196,6 +201,7 @@ export async function collectCiFailureContext({
 
   const runSummary = {
     id: Number(run?.id ?? runId),
+    runAttempt: normalizeRunAttempt(run?.run_attempt),
     name: run?.name ?? null,
     workflowName: run?.workflow_name ?? run?.name ?? null,
     url: runUrl(repository, run),
