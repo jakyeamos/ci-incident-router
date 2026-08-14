@@ -17,8 +17,8 @@ write, pull-request write, or deployment permissions.
 
 ## Local handoff
 
-Download the artifact from the failed run, or let the CLI retrieve the exact
-run-scoped artifact, then run:
+Download the artifact from the prompt workflow run, or let the CLI retrieve the
+exact repository artifact named for the failed run, then run:
 
 ```bash
 codex-ci download \

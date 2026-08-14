@@ -44,9 +44,11 @@ node ./bin/codex-ci.mjs handoff \
 Pass `--start` only when you explicitly want this process to start
 `codex exec` with a read-only sandbox.
 
-`download` finds the exact `codex-ci-prompt-<run-id>` artifact, downloads its
-archive, and extracts only the JSON and Markdown prompt files. It requires the
-system `unzip` command.
+`download` searches the repository's artifact catalog for the exact
+`codex-ci-prompt-<run-id>` name, downloads its archive, and extracts only the
+JSON and Markdown prompt files. The run ID is the failed CI run ID embedded in
+the artifact name; the artifact itself is attached to the prompt workflow run.
+It requires the system `unzip` command.
 
 ## GitHub Actions
 

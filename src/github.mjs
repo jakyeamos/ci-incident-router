@@ -90,6 +90,12 @@ export function createGithubClient({ token, fetchImpl = globalThis.fetch, apiBas
       return Array.isArray(result?.artifacts) ? result.artifacts : [];
     },
 
+    async getArtifactsByName(repository, name) {
+      const query = new URLSearchParams({ name, per_page: "100" });
+      const result = await request(`/repos/${repository}/actions/artifacts?${query.toString()}`);
+      return Array.isArray(result?.artifacts) ? result.artifacts : [];
+    },
+
     async downloadArtifact(repository, artifactId) {
       const path = `/repos/${repository}/actions/artifacts/${encodeURIComponent(String(artifactId))}/zip`;
       const url = apiUrl(path, apiBase);
