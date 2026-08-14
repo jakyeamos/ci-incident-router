@@ -120,7 +120,9 @@ export function createGithubClient({ token, fetchImpl = globalThis.fetch, apiBas
       const path = `/repos/${repository}/actions/jobs/${encodeURIComponent(String(jobId))}/logs`;
       const url = apiUrl(path, apiBase);
       const response = await fetchImpl(url, {
-        headers: { ...headers, accept: "text/plain" },
+        // GitHub requires its JSON media type here and returns the log text.
+        // text/plain is rejected with HTTP 415 before the log response.
+        headers: { ...headers, accept: headers.accept },
         redirect: "follow",
       });
       if (response.status === 404 || response.status === 410) {
