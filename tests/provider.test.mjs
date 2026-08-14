@@ -40,6 +40,23 @@ test("GitHub client lists run artifacts and downloads the selected archive", asy
   assert.equal(calls[1].init.headers.authorization, "Bearer test-token");
 });
 
+test("GitHub client searches repository artifacts by exact name", async () => {
+  const calls = [];
+  const client = createGithubClient({
+    token: "test-token",
+    fetchImpl: async (url, init) => {
+      calls.push({url, init});
+      return new Response(JSON.stringify({artifacts: [{id: 88, name: "codex-ci-prompt-123", expired: false}]}), {status: 200, headers: {"content-type": "application/json"}});
+    },
+  });
+
+  const artifacts = await client.getArtifactsByName("octo/demo", "codex-ci-prompt-123");
+
+  assert.equal(artifacts[0].id, 88);
+  assert.match(calls[0].url, /actions\/artifacts\?name=codex-ci-prompt-123&per_page=100$/);
+  assert.equal(calls[0].init.headers.authorization, "Bearer test-token");
+});
+
 test("repository and run URL parsing handles GitHub URL forms", () => {
   assert.equal(parseGithubRepository("git@github.com:octo/demo.git"), "octo/demo");
   assert.equal(parseGithubRepository("https://github.com/octo/demo.git"), "octo/demo");

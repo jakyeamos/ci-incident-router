@@ -8,7 +8,7 @@ import { downloadPromptArtifact, readContextArtifact, readPrompt, unpackPromptAr
 import { renderCodexPrompt } from "../src/prompt.mjs";
 import { makeFixtureClient } from "./helpers.mjs";
 
-test("downloads the exact run artifact and extracts only the two prompt files", async () => {
+test("downloads the exact prompt artifact by failed run id and extracts only the two prompt files", async () => {
   const context = await collectCiFailureContext({
     client: await makeFixtureClient(),
     repository: "octo/demo",
@@ -24,10 +24,11 @@ test("downloads the exact run artifact and extracts only the two prompt files", 
     return { stdout: Buffer.from(args.at(-1).endsWith(".json") ? json : markdown) };
   };
   const client = {
-    async getRunArtifacts() {
+    async getArtifactsByName(_repository, name) {
+      assert.equal(name, "codex-ci-prompt-123456789");
       return [
-        { id: 77, name: "codex-ci-prompt-123456789", expired: false, workflow_run: { id: 123456789 } },
-        { id: 78, name: "unrelated-artifact", expired: false, workflow_run: { id: 123456789 } },
+        { id: 77, name: "codex-ci-prompt-123456789", expired: false, workflow_run: { id: 987654321 } },
+        { id: 78, name: "unrelated-artifact", expired: false, workflow_run: { id: 987654321 } },
       ];
     },
     async downloadArtifact(_repository, artifactId) {
