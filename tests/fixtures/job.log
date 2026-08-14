@@ -1,0 +1,4 @@
+2026-08-14T14:03:58Z Running tests
+2026-08-14T14:03:59Z Error: expected true but received false
+2026-08-14T14:03:59Z token=super-secret-value
+2026-08-14T14:04:00Z Error: assertion failed
