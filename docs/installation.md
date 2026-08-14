@@ -18,7 +18,8 @@ write, pull-request write, or deployment permissions.
 ## Local handoff
 
 Download the artifact from the prompt workflow run, or let the CLI retrieve the
-exact repository artifact named for the failed run, then run:
+exact repository artifact named for the failed run and its rerun attempt, then
+run:
 
 ```bash
 codex-ci download \

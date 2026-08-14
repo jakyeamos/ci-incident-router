@@ -86,6 +86,7 @@ test("workflow template has the required provider and safety boundaries", async 
   const action = await readFile(new URL("../action.yml", import.meta.url), "utf8");
   const emitter = await readFile(new URL("../scripts/emit-workflow-prompt.mjs", import.meta.url), "utf8");
   assert.match(workflow, /workflow_run:/);
+  assert.match(workflow, /workflow_run\.run_attempt/);
   assert.match(workflow, /actions: write/);
   assert.match(workflow, /pull-requests: read/);
   assert.doesNotMatch(workflow, /actions\/checkout/);
