@@ -91,9 +91,9 @@
     "verified": [
       {"ref": "tests/", "note": "18 local tests pass, including mocked GitHub responses and artifact-file handling.", "observed_at": "2026-08-14T16:21:30Z"},
       {"ref": "pnpm test; pnpm lint; pnpm typecheck; pnpm build; pnpm quality:contract; pre-cr run", "note": "All required local gates pass; Pre-CR reports ready with a coverage warning because no coverage report is configured.", "observed_at": "2026-08-14T16:21:30Z"},
-      {"ref": ".quality-runner/runs/20260814T162044Z-ad6abdf5/run-manifest.json", "note": "Quality Runner inspect-only baseline; source worktree unchanged and no gates executed.", "observed_at": "2026-08-14T16:20:44Z"}
+      {"ref": ".quality-runner/runs/20260814T162929Z-6d2a7092/run-manifest.json", "note": "Quality Runner inspect-only baseline bound to main at 40f24ee; source worktree unchanged and no gates executed.", "observed_at": "2026-08-14T16:29:30Z"}
     ]
   },
   "drift": [{"kind": "verification-gap", "summary": "The provider workflow is implemented locally but has no live GitHub publication or failed-run evidence.", "status": "open", "observed_at": "2026-08-14T16:21:30Z", "evidence": [{"ref": "docs/installation.md", "note": "Provider publication is explicitly deferred.", "observed_at": "2026-08-14T16:21:30Z"}]}],
-  "updated_at": "2026-08-14T16:21:30Z"
+  "updated_at": "2026-08-14T16:29:30Z"
 }
