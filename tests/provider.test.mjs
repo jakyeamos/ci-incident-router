@@ -38,6 +38,7 @@ test("GitHub client lists run artifacts and downloads the selected archive", asy
   assert.match(calls[0].url, /actions\/runs\/123\/artifacts\?per_page=100$/);
   assert.match(calls[1].url, /actions\/artifacts\/77\/zip$/);
   assert.equal(calls[1].init.headers.authorization, "Bearer test-token");
+  assert.equal(calls[1].init.headers.accept, "application/vnd.github+json");
 });
 
 test("GitHub client searches repository artifacts by exact name", async () => {

@@ -100,7 +100,9 @@ export function createGithubClient({ token, fetchImpl = globalThis.fetch, apiBas
       const path = `/repos/${repository}/actions/artifacts/${encodeURIComponent(String(artifactId))}/zip`;
       const url = apiUrl(path, apiBase);
       const response = await fetchImpl(url, {
-        headers: { ...headers, accept: "application/zip" },
+        // GitHub requires its JSON media type here and redirects to the ZIP.
+        // application/zip is rejected with HTTP 415 before the redirect.
+        headers: { ...headers, accept: headers.accept },
         redirect: "follow",
       });
       if (!response.ok) {
