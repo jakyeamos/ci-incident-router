@@ -78,3 +78,7 @@ The v1 boundary is intentionally narrow:
 
 See [`docs/security.md`](docs/security.md) for the trust boundary and
 [`docs/installation.md`](docs/installation.md) for the workflow integration.
+
+## Behavior intent and proof
+
+The approved [product requirements](docs/PRD.md) are linked to exact source and proof in [Compass](.project-compass/development.json), with change routing in the [surface matrix](.agents/change-surface-matrix.json). Local fixture evidence does not re-certify live GitHub collection or actual Codex execution. Existing provider evidence remains intact. Fork runs stay diagnosis-only; prompt consumption does not start Codex without explicit read-only handoff authorization.

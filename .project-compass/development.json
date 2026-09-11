@@ -1,0 +1,181 @@
+{
+  "schema": "compass-development/v1",
+  "revision": 1,
+  "inventory": {
+    "source": "git-tracked",
+    "include": [
+      ".github/**",
+      ".project-compass/behaviors.json",
+      ".project-compass/development.json",
+      "README.md",
+      "action.yml",
+      "bin/codex-ci.mjs",
+      "package.json",
+      "pnpm-lock.yaml",
+      "schemas/ci-failure-context.schema.json",
+      "scripts/**",
+      "src/**",
+      "test/**",
+      "tests/**",
+      ".agents/change-surface-matrix.json",
+      "bin/**",
+      "schemas/**"
+    ],
+    "exclude": [],
+    "behavior_ref": ".project-compass/behaviors.json"
+  },
+  "bindings": [
+    {
+      "id": "source-reviewed-bootstrap-proposal",
+      "compass_id": "project",
+      "authority": "accepted",
+      "paths": [
+        ".github/workflow-templates/codex-ci-prompt.yml",
+        ".github/workflows/ci.yml",
+        "action.yml",
+        "bin/codex-ci.mjs",
+        "package.json",
+        "pnpm-lock.yaml",
+        "schemas/ci-failure-context.schema.json",
+        "scripts/build.mjs",
+        "scripts/check-contracts.mjs",
+        "scripts/emit-workflow-prompt.mjs",
+        "scripts/lint.mjs",
+        "scripts/typecheck.mjs",
+        "src/args.mjs",
+        "src/artifacts.mjs",
+        "src/constants.mjs",
+        "src/context.mjs",
+        "src/github.mjs",
+        "src/prompt.mjs",
+        "src/redaction.mjs",
+        "src/repository.mjs",
+        "tests/artifacts.test.mjs",
+        "tests/cli.test.mjs",
+        "tests/context.test.mjs",
+        "tests/fixtures/job.log",
+        "tests/fixtures/jobs.json",
+        "tests/fixtures/pull-files.json",
+        "tests/fixtures/pull-request.json",
+        "tests/fixtures/workflow-run.json",
+        "tests/helpers.mjs",
+        "tests/prompt.test.mjs",
+        "tests/provider.test.mjs",
+        "README.md",
+        ".project-compass/development.json",
+        ".project-compass/behaviors.json",
+        ".agents/change-surface-matrix.json"
+      ],
+      "outcomes": [
+        "normalized-evidence",
+        "safe-prompt-artifact",
+        "workflow-artifact"
+      ],
+      "references": [
+        "docs/PRD.md",
+        "README.md",
+        "tests/context.test.mjs",
+        "tests/prompt.test.mjs",
+        "tests/provider.test.mjs",
+        "tests/artifacts.test.mjs",
+        "tests/cli.test.mjs",
+        ".pronto/behavior-assurance.json",
+        "docs/security.md"
+      ],
+      "constraints": [
+        "Treat logs and patches as untrusted evidence; redact and bound content before persistence while preserving missing data.",
+        "Normalize only actionable failed runs and preserve run-attempt identity, provenance and explicit unsupported or unavailable inputs.",
+        "Keep fork handling diagnosis-only; never check out or execute failed pull-request heads from the provider workflow.",
+        "Require explicit user-requested read-only Codex handoff; do not automatically start, mutate code, commit, push or authorize release.",
+        "Keep mocked provider and printed command proof distinct from live authenticated GitHub collection, installed workflow behavior and actual Codex execution."
+      ],
+      "proof": [
+        {
+          "id": "normalized-context",
+          "receipt": ".project-compass/evidence/normalized-context.json",
+          "command": [
+            "node",
+            "--test",
+            "tests/context.test.mjs"
+          ],
+          "oracle_ref": "tests/context.test.mjs",
+          "behavior_ids": [
+            "normalize-failure-context"
+          ]
+        },
+        {
+          "id": "safe-prompt",
+          "receipt": ".project-compass/evidence/safe-prompt.json",
+          "command": [
+            "node",
+            "--test",
+            "tests/prompt.test.mjs"
+          ],
+          "oracle_ref": "tests/prompt.test.mjs",
+          "behavior_ids": [
+            "render-safe-codex-prompt"
+          ]
+        },
+        {
+          "id": "provider-boundary",
+          "receipt": ".project-compass/evidence/provider-boundary.json",
+          "command": [
+            "node",
+            "--test",
+            "tests/provider.test.mjs"
+          ],
+          "oracle_ref": "tests/provider.test.mjs",
+          "behavior_ids": [
+            "workflow-emits-artifact-without-checkout"
+          ]
+        },
+        {
+          "id": "read-only-handoff",
+          "receipt": ".project-compass/evidence/read-only-handoff.json",
+          "command": [
+            "node",
+            "--test",
+            "tests/cli.test.mjs"
+          ],
+          "oracle_ref": "tests/cli.test.mjs",
+          "behavior_ids": [
+            "read-only-codex-handoff"
+          ]
+        },
+        {
+          "id": "artifact-identity",
+          "receipt": ".project-compass/evidence/artifact-identity.json",
+          "command": [
+            "node",
+            "--test",
+            "tests/artifacts.test.mjs"
+          ],
+          "oracle_ref": "tests/artifacts.test.mjs",
+          "behavior_ids": []
+        }
+      ],
+      "behavior_ids": [
+        "normalize-failure-context",
+        "render-safe-codex-prompt",
+        "workflow-emits-artifact-without-checkout",
+        "read-only-codex-handoff"
+      ],
+      "handoff_review": "Independent source-association review: Treat logs and patches as untrusted evidence; redact and bound content before persistence while preserving missing data. Normalize only actionable failed runs and preserve run-attempt identity, provenance and explicit unsupported or unavailable inputs. Keep fork handling diagnosis-only; never check out or execute failed pull-request heads from the provider workflow. Require explicit user-requested read-only Codex handoff; do not automatically start, mutate code, commit, push or authorize release. Keep mocked provider and printed command proof distinct from live authenticated GitHub collection, installed workflow behavior and actual Codex execution. Canonical product intent remains unchanged; runtime gaps remain open. Metadata associates source and proof, without implementing new behavior.",
+      "decision_id": "reviewed-existing-product-association"
+    }
+  ],
+  "decisions": [
+    {
+      "id": "bootstrap-boundary-proposal",
+      "summary": "Bounded GitHub failure evidence into a user-controlled Codex prompt; exact path-to-outcome association requires owner reconciliation.",
+      "source": "README.md",
+      "status": "proposed"
+    },
+    {
+      "id": "reviewed-existing-product-association",
+      "status": "accepted",
+      "source": "docs/PRD.md",
+      "summary": "Preserve already-authoritative product outcomes and associate independently reviewed exact source paths. No new product intent or runtime authority is ratified."
+    }
+  ]
+}
