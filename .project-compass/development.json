@@ -17,7 +17,9 @@
       "src/**",
       "test/**",
       "tests/**",
-      ".agents/change-surface-matrix.json"
+      ".agents/change-surface-matrix.json",
+      "bin/**",
+      "schemas/**"
     ],
     "exclude": [],
     "behavior_ref": ".project-compass/behaviors.json"
