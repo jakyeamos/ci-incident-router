@@ -1,8 +1,11 @@
 {
   "schema_version": "change-surface-matrix/v1",
-  "subject": {"kind": "repository", "id": "ci-incident-router"},
+  "subject": {
+    "kind": "repository",
+    "id": "ci-incident-router"
+  },
   "owner": "Jakye Amos",
-  "last_reviewed": "2026-08-14",
+  "last_reviewed": "2026-09-11",
   "surfaces": [
     {
       "id": "context-contract",
@@ -10,8 +13,15 @@
       "path": "src/context.mjs; schemas/ci-failure-context.schema.json",
       "owner": "repository owner",
       "condition": "The normalized failure context or its schema changes.",
-      "operations": ["add", "change", "remove"],
-      "validation": ["pnpm test", "pnpm quality:contract"],
+      "operations": [
+        "add",
+        "change",
+        "remove"
+      ],
+      "validation": [
+        "pnpm test",
+        "pnpm quality:contract"
+      ],
       "status": "applicable"
     },
     {
@@ -20,8 +30,15 @@
       "path": "src/prompt.mjs; src/redaction.mjs; codex-ci-prompt.md",
       "owner": "repository owner",
       "condition": "Prompt content, redaction, bounds, or trust-boundary wording changes.",
-      "operations": ["add", "change", "remove"],
-      "validation": ["pnpm test", "pnpm lint"],
+      "operations": [
+        "add",
+        "change",
+        "remove"
+      ],
+      "validation": [
+        "pnpm test",
+        "pnpm lint"
+      ],
       "status": "applicable"
     },
     {
@@ -30,8 +47,16 @@
       "path": "action.yml; scripts/emit-workflow-prompt.mjs; .github/workflow-templates/",
       "owner": "repository owner",
       "condition": "The provider event, API collection, permissions, artifact, or action interface changes.",
-      "operations": ["add", "change", "remove"],
-      "validation": ["pnpm lint", "pnpm build", "controlled failed workflow run"],
+      "operations": [
+        "add",
+        "change",
+        "remove"
+      ],
+      "validation": [
+        "pnpm lint",
+        "pnpm build",
+        "controlled failed workflow run"
+      ],
       "status": "applicable"
     },
     {
@@ -40,15 +65,56 @@
       "path": "bin/codex-ci.mjs; src/artifacts.mjs",
       "owner": "repository owner",
       "condition": "Prompt consumption or explicit Codex handoff behavior changes.",
-      "operations": ["add", "change", "remove"],
-      "validation": ["pnpm test", "read-only handoff smoke test"],
+      "operations": [
+        "add",
+        "change",
+        "remove"
+      ],
+      "validation": [
+        "pnpm test",
+        "read-only handoff smoke test"
+      ],
+      "status": "applicable"
+    },
+    {
+      "id": "compass-source-associations",
+      "scope": "existing product intent and source/proof metadata",
+      "path": ".project-compass/development.json; .project-compass/behaviors.json; README.md",
+      "owner": "repository owner",
+      "condition": "Product-to-source or proof associations change while existing runtime contracts remain intact.",
+      "operations": [
+        "add",
+        "change"
+      ],
+      "validation": [
+        "Compass actual-diff completion",
+        "review source-specific oracles",
+        "authoritative Quality Runner release check"
+      ],
       "status": "applicable"
     }
   ],
   "unresolved_surfaces": [],
   "operation_evidence": {
-    "add": {"status": "passed", "evidence": ["src/context.mjs; src/prompt.mjs; src/artifacts.mjs; bin/codex-ci.mjs; action.yml; .github/workflow-templates/codex-ci-prompt.yml", "tests/; pnpm test; pnpm lint; pnpm typecheck; pnpm build; pnpm quality:contract"]},
-    "change": {"status": "passed", "evidence": ["Rerun-aware artifact naming and download selection are covered by tests and the published action reference; Quality Runner consumer workflow is installed and live-tested."]},
-    "remove": {"status": "not_applicable", "evidence": ["No existing feature is being removed."]}
-  }
+    "add": {
+      "status": "passed",
+      "evidence": [
+        "src/context.mjs; src/prompt.mjs; src/artifacts.mjs; bin/codex-ci.mjs; action.yml; .github/workflow-templates/codex-ci-prompt.yml",
+        "tests/; pnpm test; pnpm lint; pnpm typecheck; pnpm build; pnpm quality:contract"
+      ]
+    },
+    "change": {
+      "status": "passed",
+      "evidence": [
+        "Rerun-aware artifact naming and download selection are covered by tests and the published action reference; Quality Runner consumer workflow is installed and live-tested."
+      ]
+    },
+    "remove": {
+      "status": "not_applicable",
+      "evidence": [
+        "No existing feature is being removed."
+      ]
+    }
+  },
+  "bootstrap_disposition": "Existing-intent metadata association only. Prior operation evidence remains intact and is not re-certified by new local fixtures. No public output, provider workflow, gate or runtime change."
 }
