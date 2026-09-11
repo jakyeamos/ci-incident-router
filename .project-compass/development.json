@@ -1,6 +1,6 @@
 {
   "schema": "compass-development/v1",
-  "revision": 1,
+  "revision": 2,
   "inventory": {
     "source": "git-tracked",
     "include": [
@@ -126,7 +126,7 @@
           ],
           "oracle_ref": "tests/provider.test.mjs",
           "behavior_ids": [
-            "workflow-emits-artifact-without-checkout"
+            "mocked-github-and-workflow-source-contract"
           ]
         },
         {
@@ -157,10 +157,10 @@
       "behavior_ids": [
         "normalize-failure-context",
         "render-safe-codex-prompt",
-        "workflow-emits-artifact-without-checkout",
+        "mocked-github-and-workflow-source-contract",
         "read-only-codex-handoff"
       ],
-      "handoff_review": "Independent source-association review: Treat logs and patches as untrusted evidence; redact and bound content before persistence while preserving missing data. Normalize only actionable failed runs and preserve run-attempt identity, provenance and explicit unsupported or unavailable inputs. Keep fork handling diagnosis-only; never check out or execute failed pull-request heads from the provider workflow. Require explicit user-requested read-only Codex handoff; do not automatically start, mutate code, commit, push or authorize release. Keep mocked provider and printed command proof distinct from live authenticated GitHub collection, installed workflow behavior and actual Codex execution. Canonical product intent remains unchanged; runtime gaps remain open. Metadata associates source and proof, without implementing new behavior.",
+      "handoff_review": "Independent source-association review: Treat logs and patches as untrusted evidence; redact and bound content before persistence while preserving missing data. Normalize only actionable failed runs and preserve run-attempt identity, provenance and explicit unsupported or unavailable inputs. Keep fork handling diagnosis-only; never check out or execute failed pull-request heads from the provider workflow. Require explicit user-requested read-only Codex handoff; do not automatically start, mutate code, commit, push or authorize release. Keep mocked provider and printed command proof distinct from live authenticated GitHub collection, installed workflow behavior and actual Codex execution. Canonical product intent remains unchanged; runtime gaps remain open. Metadata associates source and proof, without implementing new behavior. The provider oracle checks mocked GitHub request/auth/media/archive handling and workflow/action/emitter source strings only. Actual workflow emission and artifact upload remain unverified; workflow-emits-artifact-without-checkout remains preserved and unbound.",
       "decision_id": "reviewed-existing-product-association"
     }
   ],

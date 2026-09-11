@@ -157,6 +157,15 @@
         }
       ],
       "spec_ref": ".pronto/behavior-assurance.json"
+    },
+    {
+      "id": "mocked-github-and-workflow-source-contract",
+      "title": "Mocked GitHub requests and static workflow safety contract",
+      "spec_ref": ".pronto/behavior-assurance.json",
+      "oracle_refs": [
+        "tests/provider.test.mjs"
+      ],
+      "authority": "accepted"
     }
   ]
 }
